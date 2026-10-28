@@ -20,8 +20,51 @@ window.onload = async () => {
     let fontSize = Math.min(window.innerHeight / 10, window.innerWidth / 10);
     data.style.fontSize = `${fontSize}px`;
 
-    let my_ip = await (await fetch("https://wtfismyip.com/json").catch()).json().catch();
-    let ip_data = await (await fetch(`https://uncors.vercel.app/?url=http://ip-api.com/json/${my_ip.YourFuckingIPAddress}`).catch()).json().catch();
+    // Look up the visitor's own IP/location straight from CORS-enabled HTTPS services
+    // (no third-party proxy). Every lookup has a timeout and failures are ignored, so the
+    // page still works if the services are blocked or offline.
+    const getJSON = async (url, ms = 4000) => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), ms);
+      try {
+        const res = await fetch(url, { signal: ctrl.signal });
+        return res.ok ? await res.json() : null;
+      } catch (e) {
+        return null;
+      } finally {
+        clearTimeout(timer);
+      }
+    };
+
+    const lookupIP = async () => {
+      const a = await getJSON("https://ipwho.is/");
+      if (a && a.success !== false && a.ip) {
+        return {
+          ip: a.ip,
+          country: a.country, countryCode: a.country_code,
+          region: a.region, regionCode: a.region_code,
+          city: a.city, lat: a.latitude, lon: a.longitude,
+          isp: a.connection && (a.connection.isp || a.connection.org),
+          as: a.connection && a.connection.asn ? `AS${a.connection.asn} ${a.connection.org || ""}`.trim() : null,
+          timezone: a.timezone && a.timezone.id,
+        };
+      }
+      const b = await getJSON("https://ipapi.co/json/");
+      if (b && b.ip && !b.error) {
+        return {
+          ip: b.ip,
+          country: b.country_name, countryCode: b.country_code,
+          region: b.region, regionCode: b.region_code,
+          city: b.city, lat: b.latitude, lon: b.longitude,
+          isp: b.org, as: b.asn ? `${b.asn} ${b.org || ""}`.trim() : null,
+          timezone: b.timezone,
+        };
+      }
+      const c = await getJSON("https://api.ipify.org?format=json");
+      return c && c.ip ? { ip: c.ip } : null;
+    };
+
+    const info = await lookupIP();
 
     const videoData = await fetch("video.mp4").catch(error);
     video.src = URL.createObjectURL(await videoData.blob());
@@ -31,19 +74,18 @@ window.onload = async () => {
       loading.style.display = "none";
       start.style.display = "flex";
 
-      if (my_ip && ip_data) {
-        push("Haha", "Gottem")
-        push("IP Address", ip_data.query);
-        push("Hostname", my_ip.YourFuckingHostname);
-        push("Country", `${ip_data.country} (${ip_data.countryCode})`);
-        push("Region", `${ip_data.regionName} (${ip_data.region})`);
-        push("City", ip_data.city);
-        push("Latitude", ip_data.lat);
-        push("Longitude", ip_data.lon);
-        push("ISP", my_ip.YourFuckingISP);
-        push("Autonomous System", ip_data.as);
+      if (info) {
+        push("Haha", "Gottem");
+        push("IP Address", info.ip);
+        if (info.country) push("Country", `${info.country} (${info.countryCode})`);
+        if (info.region) push("Region", `${info.region} (${info.regionCode})`);
+        if (info.city) push("City", info.city);
+        if (info.lat != null) push("Latitude", info.lat);
+        if (info.lon != null) push("Longitude", info.lon);
+        if (info.isp) push("ISP", info.isp);
+        if (info.as) push("Autonomous System", info.as);
       } else {
-        push("IP Address", "::ffff:172.70.126.134");
+        push("Haha", "Gottem");
       }
       push("User Agent", navigator.userAgent);
       push("Connection Method", "GET");
@@ -86,7 +128,8 @@ window.onload = async () => {
       push("Language", `${navigator.language}`);
       let date = new Date();
       push("Current Time", `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`);
-      if (ip_data) push("Timezone", ip_data.timezone);
+      if (info && info.timezone) push("Timezone", info.timezone);
+      else push("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
       push("Timezone Offset", date.getTimezoneOffset() / 60, " hours");
       push("Hacked", pick(hacked_statements));
       push("Stop playing", "Roblox");
@@ -104,7 +147,7 @@ window.onload = async () => {
         if (step >= memes.length) step = -Infinity;
         if (step < 0) return clearInterval(interval);
         if (time >= 0) {
-          if (step == 0) document.title = `lmao this you? [${my_ip ? my_ip.YourFuckingIPAddress : "::ffff:172.70.126.134"}]`;
+          if (step == 0) document.title = info ? `lmao this you? [${info.ip}]` : "lmao this you?";
           const el = document.createElement("span");
           el.textContent = `${memes[step]}`;
           step++;
