@@ -2,11 +2,11 @@
 const BLURBS = {
   'start': {
     header: 'Get Ready',
-    blurb: 'Select your difficulty and start the game.'
+    blurb: 'Connect 4 chips in a row (any direction) before the computer does. Pick a difficulty (1 = easiest, 5 = hardest), press Start Game, then click a column to drop your red chip.'
   },
   'p1-turn': {
     header: 'Your Turn',
-    blurb: 'Click on the board to drop your chip. I bet the computer will beat you'
+    blurb: 'Click a column on the board to drop your red chip. First to connect 4 wins.'
   },
   'p2-turn': {
     header: 'Computer\'s Turn',

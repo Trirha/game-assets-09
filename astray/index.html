@@ -22,9 +22,9 @@
         ballMesh = undefined,
         ballRadius = 0.25,
         keyAxis = [0, 0],
-        ironTexture = THREE.ImageUtils.loadTexture("/ball.png"),
-        planeTexture = THREE.ImageUtils.loadTexture("/concrete.png"),
-        brickTexture = THREE.ImageUtils.loadTexture("/brick.png"),
+        ironTexture = THREE.ImageUtils.loadTexture("ball.png"),
+        planeTexture = THREE.ImageUtils.loadTexture("concrete.png"),
+        brickTexture = THREE.ImageUtils.loadTexture("brick.png"),
         gameState = undefined,
         // Box2D shortcuts
         b2World = Box2D.Dynamics.b2World,
@@ -320,7 +320,26 @@
         color: yellow;
         font-weight: bold;
       }
+          html,
+      body {
+        overflow: hidden;
+        margin: 0;
+        height: 100%;
+      }
+      canvas {
+        display: block;
+      }
     </style>
+    <script>
+      // keep arrow keys / space from scrolling the page
+      window.addEventListener(
+        "keydown",
+        function (e) {
+          if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) e.preventDefault();
+        },
+        { passive: false }
+      );
+    </script>
   </head>
 
   <body>

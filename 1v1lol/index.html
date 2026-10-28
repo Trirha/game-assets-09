@@ -156,6 +156,19 @@
       //var gameInstance = UnityLoader.instantiate("gameContainer", "Build/WebGL.json", {onProgress: UnityProgress});
 
       window.unityInstance = gameInstance;
+
+      // The Unity build (WebGL.json/data/wasm) is NOT in this repo; it is fetched from gameJsonUrl.
+      // If that host is dead/blocked the loader spins forever, so surface a clear message instead.
+      setTimeout(function () {
+        if (typeof gameLoaded !== "undefined" && gameLoaded) return;
+        if (gameInstance && gameInstance.Module && gameInstance.progress) return; // still downloading
+        var l = document.querySelector("#loader");
+        if (l) {
+          l.insertAdjacentHTML("beforeend", '<p style="color:#fff;font-family:sans-serif;text-align:center;max-width:420px">Could not download the game files from<br><code>' + gameJsonUrl + '</code><br>The host is unreachable or the build was removed.</p>');
+          var sp = l.querySelector(".spinner");
+          if (sp) sp.style.display = "none";
+        }
+      }, 20000);
       var lockedOccured = false;
 
       function UnityProgress(gameInstance, progress) {
