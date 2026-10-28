@@ -1,16 +1,36 @@
-<html>
-  <head>
-    <title>Roblox | 3kh0</title>
-    <script src="script.js"></script>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="loading">Loading...</div>
-    <div id="start" style="display: none; text-align: center;">
-      Click to play Roblox.<br />
-      Brought to you by 3kh0
-    </div>
-    <div id="data"></div>
-    <video id="video" playingline style="display: none; pointer-events: none;"></video>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roblox</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #111; color: #eee; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
+  #bar { height: 40px; display: flex; align-items: center; gap: 12px; padding: 0 12px; box-sizing: border-box; background: #1c1c1c; font-size: 14px; }
+  #bar span { opacity: .75; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #bar a { color: #fff; background: #335fff; padding: 6px 12px; border-radius: 6px; text-decoration: none; white-space: nowrap; }
+  #bar a:hover { background: #2a4fd6; }
+  #frame { display: block; width: 100%; height: calc(100% - 40px); border: 0; background: #000; }
+</style>
+</head>
+<body>
+  <div id="bar">
+    <span>Roblox cloud player by now.gg (third-party, not run by Roblox). Not loading? Use the button.</span>
+    <a id="fs" href="#">Fullscreen</a>
+    <a id="open" target="_blank" rel="noopener">Open in new tab</a>
+  </div>
+  <iframe id="frame" allow="fullscreen; autoplay; gamepad; microphone; clipboard-read; clipboard-write; keyboard-map" allowfullscreen></iframe>
+<script>
+  // Change this one line if now.gg moves the page.
+  var ROBLOX_URL = "https://now.gg/play/roblox-corporation/5349/roblox";
+  document.getElementById("open").href = ROBLOX_URL;
+  document.getElementById("frame").src = ROBLOX_URL;
+  document.getElementById("fs").onclick = function (e) {
+    e.preventDefault();
+    var f = document.getElementById("frame");
+    (f.requestFullscreen || f.webkitRequestFullscreen || function () {}).call(f);
+  };
+</script>
+<script src="/js/main.js"></script>
+</body>
 </html>
