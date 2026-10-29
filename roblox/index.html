@@ -5,31 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Roblox</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #111; color: #eee; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
-  #bar { height: 40px; display: flex; align-items: center; gap: 12px; padding: 0 12px; box-sizing: border-box; background: #1c1c1c; font-size: 14px; }
-  #bar span { opacity: .75; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #bar a { color: #fff; background: #335fff; padding: 6px 12px; border-radius: 6px; text-decoration: none; white-space: nowrap; }
-  #bar a:hover { background: #2a4fd6; }
-  #frame { display: block; width: 100%; height: calc(100% - 40px); border: 0; background: #000; }
+  html, body { margin: 0; height: 100%; background: #111; color: #eee; font-family: Arial, Helvetica, sans-serif; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 16px; box-sizing: border-box; }
+  h1 { margin: 0; font-size: 28px; }
+  p { margin: 0; max-width: 460px; opacity: .75; font-size: 14px; line-height: 1.4; }
+  a.play { color: #fff; background: #335fff; padding: 16px 40px; border-radius: 10px; text-decoration: none; font-size: 22px; font-weight: bold; }
+  a.play:hover { background: #2a4fd6; }
 </style>
 </head>
 <body>
-  <div id="bar">
-    <span>Roblox cloud player by now.gg (third-party, not run by Roblox). Not loading? Use the button.</span>
-    <a id="fs" href="#">Fullscreen</a>
-    <a id="open" target="_blank" rel="noopener">Open in new tab</a>
-  </div>
-  <iframe id="frame" allow="fullscreen; autoplay; gamepad; microphone; clipboard-read; clipboard-write; keyboard-map" allowfullscreen></iframe>
+  <h1>Roblox</h1>
+  <a id="play" class="play" target="_blank" rel="noopener">Play Roblox</a>
+  <p>Roblox has no browser version, so this opens a cloud player by now.gg in a new tab. It is a third-party service, not run by Roblox.</p>
 <script>
   // Change this one line if now.gg moves the page.
   var ROBLOX_URL = "https://now.gg/apps/a/19900/b.html";
-  document.getElementById("open").href = ROBLOX_URL;
-  document.getElementById("frame").src = ROBLOX_URL;
-  document.getElementById("fs").onclick = function (e) {
-    e.preventDefault();
-    var f = document.getElementById("frame");
-    (f.requestFullscreen || f.webkitRequestFullscreen || function () {}).call(f);
-  };
+  document.getElementById("play").href = ROBLOX_URL;
+  // Try to open it right away. Browsers often block this unless you clicked,
+  // in which case the Play button above does the same thing.
+  try { window.open(ROBLOX_URL, "_blank", "noopener"); } catch (e) {}
 </script>
 <script src="/js/main.js"></script>
 </body>
